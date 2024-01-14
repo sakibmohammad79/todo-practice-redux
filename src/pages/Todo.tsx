@@ -4,7 +4,7 @@ import Container from "@/lib/Container";
 const Todo = () => {
   return (
     <Container>
-      <h1 className="text-center text-green-500 font-semibold text-3xl my-5">
+      <h1 className="text-center text-orange-500 font-bold text-3xl my-5">
         My Todos
       </h1>
       <TodoContainer />
