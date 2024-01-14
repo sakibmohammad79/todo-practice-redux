@@ -10,7 +10,13 @@ type TTodoProps = {
   priority: string;
 };
 
-const TodoCard = ({ title, description, _id, isCompleted }: TTodoProps) => {
+const TodoCard = ({
+  title,
+  description,
+  _id,
+  isCompleted,
+  priority,
+}: TTodoProps) => {
   const dispatch = useAppDispatch();
   return (
     <div className="flex bg-white rounded-md justify-between items-center p-3 border">
@@ -20,9 +26,19 @@ const TodoCard = ({ title, description, _id, isCompleted }: TTodoProps) => {
         name="complete"
         id="complete"
       />
-      <p className="font-semibold">{title}</p>
-      <p className="font-semibold">{description}</p>
-      <div>
+      <p className="font-semibold flex-1 ml-3">{title}</p>
+      <p className="font-semibold flex-[2]">{description}</p>
+      <div className="flex-1 flex items-center gap-3">
+        <div
+          className={`rounded-full size-3 
+          ${priority === "high" ? "bg-red-500" : null}
+          ${priority === "medium" ? "bg-yellow-500" : null}
+          ${priority === "low" ? "bg-green-500" : null}
+          `}
+        ></div>
+        <p>{priority}</p>
+      </div>
+      <div className="flex-1">
         {isCompleted ? (
           <p className="text-green-500 font-semibold">Done</p>
         ) : (

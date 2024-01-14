@@ -1,3 +1,4 @@
+import { useState } from "react";
 import TodoCard from "./TodoCard";
 import TodoFilter from "./TodoFilter";
 import TodoModal from "./TodoModal";
@@ -12,12 +13,13 @@ type TItem = {
 };
 
 const TodoContainer = () => {
+  const [priority, setPriority] = useState("");
+  console.log(priority);
   //for local state
   //const { todos } = useAppSelector((state) => state.todos);
 
   //for server state
-  const { data: todos, isLoading } = useGetTodosQuery(undefined);
-  console.log(todos);
+  const { data: todos, isLoading } = useGetTodosQuery(priority);
   if (isLoading) {
     return <p>is loading....</p>;
   }
@@ -25,7 +27,7 @@ const TodoContainer = () => {
     <div>
       <div className="flex justify-between items-center my-3">
         <TodoModal></TodoModal>
-        <TodoFilter></TodoFilter>
+        <TodoFilter priority={priority} setPriority={setPriority}></TodoFilter>
       </div>
       <div className="bg-primary-gradient w-full h-full rounded-xl p-[4px] ">
         {/* default components
