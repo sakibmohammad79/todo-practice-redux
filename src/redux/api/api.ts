@@ -24,6 +24,14 @@ export const baseApi = createApi({
       },
       providesTags: ["todo"],
     }),
+    getSingleTodo: builder.query({
+      query: (id) => {
+        return {
+          url: `/task/${id}`,
+          method: "GET",
+        };
+      },
+    }),
     addTodo: builder.mutation({
       query: (data) => {
         console.log("insider base api => ", data);
@@ -45,8 +53,32 @@ export const baseApi = createApi({
       },
       invalidatesTags: ["todo"],
     }),
+    removeTodo: builder.mutation({
+      query: (id) => {
+        return {
+          url: `/task/${id}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["todo"],
+    }),
+    updateSingleTodo: builder.mutation({
+      query: (id) => {
+        return {
+          url: `/task/${id}`,
+          method: "PUT",
+        };
+      },
+      invalidatesTags: ["todo"],
+    }),
   }),
 });
 
-export const { useGetTodosQuery, useAddTodoMutation, useUpdateTodoMutation } =
-  baseApi;
+export const {
+  useGetTodosQuery,
+  useAddTodoMutation,
+  useUpdateTodoMutation,
+  useRemoveTodoMutation,
+  useGetSingleTodoQuery,
+  useUpdateSingleTodoMutation,
+} = baseApi;
