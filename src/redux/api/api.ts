@@ -63,10 +63,11 @@ export const baseApi = createApi({
       invalidatesTags: ["todo"],
     }),
     updateSingleTodo: builder.mutation({
-      query: (id) => {
+      query: (taskData) => {
         return {
-          url: `/task/${id}`,
+          url: `/task/${taskData.id}`,
           method: "PUT",
+          body: taskData.datas,
         };
       },
       invalidatesTags: ["todo"],

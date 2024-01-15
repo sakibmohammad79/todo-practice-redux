@@ -19,27 +19,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useGetSingleTodoQuery } from "@/redux/api/api";
+import {
+  useGetSingleTodoQuery,
+  useUpdateSingleTodoMutation,
+} from "@/redux/api/api";
+import { FormEvent, useState } from "react";
 
 const UpdateModal = ({ id }) => {
-  console.log(id);
-  const { data } = useGetSingleTodoQuery(id);
-  console.log("single", data);
-  //   const handleSubmit = (e: FormEvent) => {
-  //     e.preventDefault();
+  const [task, setTask] = useState("");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState("");
 
-  //     // const taskData = {
-  //     //   id: id,
-  //     //   data: {
-  //     //     title: task,
-  //     //     description,
-  //     //     isCompleted: true,
-  //     //     priority,
-  //     //   },
-  //     // };
-  //     // console.log(taskData);
-  //     // updateSingleTodo(taskData);
-  //   };
+  const [singleTodoUpdate, { isLoading }] = useUpdateSingleTodoMutation();
+
+  const { data } = useGetSingleTodoQuery(id);
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    const taskData = {
+      id: data._id,
+      datas: {
+        title: task,
+        description,
+        isCompleted: false,
+        priority,
+      },
+    };
+    singleTodoUpdate(taskData);
+  };
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -61,55 +69,62 @@ const UpdateModal = ({ id }) => {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Add Task</DialogTitle>
-          <DialogDescription>
-            Add task that you want to finish.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="task" className="text-right">
-              Task
-            </Label>
-            <Input
-              defaultValue={data?.title}
-              id="task"
-              className="col-span-3"
-            />
+        <form onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>Add Task</DialogTitle>
+            <DialogDescription>
+              Add task that you want to finish.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="task" className="text-right">
+                Task
+              </Label>
+              <Input
+                onBlur={(e) => setTask(e.target.value)}
+                defaultValue={data?.title}
+                id="task"
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="description" className="text-right">
+                Description
+              </Label>
+              <Input
+                onBlur={(e) => setDescription(e.target.value)}
+                defaultValue={data?.description}
+                id="description"
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Priority</Label>
+              <Select
+                onValueChange={(value) => setPriority(value)}
+                defaultValue={data?.priority}
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select a priority " />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Priority</SelectLabel>
+                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="low">Low</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="description" className="text-right">
-              Description
-            </Label>
-            <Input
-              defaultValue={data?.description}
-              id="description"
-              className="col-span-3"
-            />
+          <div className="flex justify-end">
+            <DialogClose asChild>
+              <Button type="submit">Save changes</Button>
+            </DialogClose>
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">Priority</Label>
-            <Select defaultValue={data?.priority}>
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Select a priority " />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Priority</SelectLabel>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="low">Low</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-        <div className="flex justify-end">
-          <DialogClose asChild>
-            <Button type="submit">Save changes</Button>
-          </DialogClose>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
